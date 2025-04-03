@@ -1,11 +1,24 @@
-#!/bin/bash 
-# detta anropar bash och berättar för systemet att bash ska köras 
-zcat m131023_233432_42174_c100519312550000001823081209281335_s1_X0.1.subreads.fastq.gz | wc -l 
-zcat m131023_233432_42174_c100519312550000001823081209281335_s1_X0.2.subreads.fastq.gz | wc -l 
-zcat m131023_233432_42174_c100519312550000001823081209281335_s1_X0.3.subreads.fastq.gz | wc -l 
-zcat m131024_200535_42174_c100563672550000001823084212221342_s1_p0.1.subreads.fastq.gz | wc -l 
-zcat m131024_200535_42174_c100563672550000001823084212221342_s1_p0.2.subreads.fastq.gz | wc -l
-zcat m131024_200535_42174_c100563672550000001823084212221342_s1_p0.3.subreads.fastq.gz | wc -l 
+#!/bin/bash -l 
 
+#SBATCH -A uppmax2025-3-3
+#SBATCH -M snowy 
+#SBATCH -p core 
+#SBATCH -n 4 
+#SBATCH -t 06:00:00
+#SBATCH -J job_name
+#SBATCH --mail-type=ALL 
+#SBATCH --mail-user eliassonjohan1@gmail.com 
+#SBATCH --output=canu_%j.out
+#SBATCH --error=canu_%j.err
 
- 
+PREFIX="e_faecium"
+OUTPUT_DIR="/home/joel5434/genomanalys_project/analyses/02_genome_assembly"
+GENOME_SIZE="3.0m"
+READS="/home/joel5434/genomanalys_project/data/raw_data/genomics_data/PacBio/*.fastq.gz" 
+
+# körar nu canu grejen 
+
+module load bioinfo-tools 
+module load canu 
+
+canu -p $PREFIX -d $OUTPUT_DIR genomeSize=$GENOME_SIZE -pacbio-raw $READS useGrid=false
